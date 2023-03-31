@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import jakarta.validation.constraints.Email;
 import lombok.Data;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -13,8 +15,10 @@ import java.util.Date;
  * @create 2022-06-23 21:24
  **/
 @Data
-public class User {
+public class User implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = -8368472178384790224L;
     /**
      * 用户id
      */

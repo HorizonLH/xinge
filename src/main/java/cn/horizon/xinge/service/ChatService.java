@@ -14,4 +14,10 @@ public interface ChatService {
      */
     void receiveMsg(ChatContent content);
 
+    /**
+     * 签收消息
+     * @param content 消息内容
+     */
+    void signMsg(ChatContent content);
+
 }

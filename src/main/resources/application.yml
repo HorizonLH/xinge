@@ -18,3 +18,8 @@ netty:
 #    ip: 0.0.0.0           # 绑定的网卡
 #    max-frame-size: 10240 # 消息帧最大体积
 #    path: /channel        # URI路径
+
+# mybatis-plus
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

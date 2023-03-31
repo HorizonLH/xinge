@@ -6,7 +6,9 @@ package cn.horizon.xinge.common.netty;
  **/
 public enum ChatErrorEnum {
 
-    USER_NOT_CONNECT(1, "用户{0}未登陆");
+    USER_NOT_CONNECT(1, "用户{0}未登陆"),
+    SUPPORT_TEXT_ONLY(2, "仅支持文本消息"),
+    MSG_ERROR(3, "消息格式不正确");
 
     private final int code;
     private final String msg;

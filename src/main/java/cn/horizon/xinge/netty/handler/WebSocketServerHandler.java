@@ -2,6 +2,8 @@ package cn.horizon.xinge.netty.handler;
 
 import cn.horizon.xinge.common.api.Result;
 import cn.horizon.xinge.common.netty.ChatActionEnum;
+import cn.horizon.xinge.common.netty.ChatErrorEnum;
+import cn.horizon.xinge.common.netty.ReturnMessage;
 import cn.horizon.xinge.common.netty.UserChannelRel;
 import cn.horizon.xinge.netty.object.ChatContent;
 import cn.horizon.xinge.service.ChatService;
@@ -65,7 +67,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         }
 
         if (!(msg instanceof TextWebSocketFrame)) {
-            sendErrorMessage(ctx, "仅支持文本类型消息");
+            ReturnMessage.returnErrorMsg(ctx.channel(), ChatErrorEnum.SUPPORT_TEXT_ONLY);
             return;
         }
 
@@ -75,7 +77,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         ChatContent content = JSON.parseObject(message, ChatContent.class);
 //
         if (content == null || content.getAction() == null) {
-            sendErrorMessage(ctx, "参数为空！");
+            ReturnMessage.returnErrorMsg(ctx.channel(), ChatErrorEnum.MSG_ERROR);
             return;
         }
         ChatActionEnum action = content.getAction();
@@ -83,7 +85,7 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         switch (action) {
             case CONNECT -> UserChannelRel.put(content.getData().getSenderId().toString(), currentChannel);
             case CHAT -> chatService.receiveMsg(content);
-            default -> sendErrorMessage(ctx, "action不正确");
+            case SIGNED -> chatService.signMsg(content);
         }
     }
 
@@ -104,13 +106,6 @@ public class WebSocketServerHandler extends SimpleChannelInboundHandler<WebSocke
         String asShortText = ctx.channel().id().asShortText();
         LOGGER.info("客户端被移除，channelId为：{}", asShortText);
         users.remove(ctx.channel());
-    }
-
-    private void sendErrorMessage(ChannelHandlerContext ctx, String errorMsg) {
-        String responseJson = Result
-                .failed(errorMsg)
-                .toString();
-        ctx.channel().writeAndFlush(new TextWebSocketFrame(responseJson));
     }
 
 
